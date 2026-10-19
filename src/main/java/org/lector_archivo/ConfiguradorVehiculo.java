@@ -1,12 +1,30 @@
-package org.clases;
+package org.lector_archivo;
+
+import org.clases.Llantas;
+import org.clases.Motor;
+import org.clases.Vehiculo;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * Se encarga de leer el archivo de configuración plano (ej. config.txt)
+ * para instanciar las piezas físicas del vehículo (Motor y Llantas)
+ * y ensamblar el objeto {@link Vehiculo} al inicio de la ejecución.
+ *
+ * @author Jacobo Lengua
+ * @version 1.0
+ */
 public class ConfiguradorVehiculo {
-
+    /**
+     * Lee la configuración del archivo especificado en la ruta y construye
+     * un objeto {@link Vehiculo} completamente inicializado y listo para la simulación.
+     *
+     * @param ruta La ubicación o nombre del archivo de texto con los parámetros.
+     * @return Una instancia de {@link Vehiculo} con el motor y las llantas configurados.
+     */
     public Vehiculo cargarConfiguracion(String ruta) {
         Map<String, String> datos = leerArchivo(ruta);
 
@@ -30,6 +48,13 @@ public class ConfiguradorVehiculo {
         return new Vehiculo(motor, llantas);
     }
 
+    /**
+     * Lee el archivo de texto línea por línea y extrae los pares de clave-valor
+     * (por ejemplo, tipo de llanta y cilindraje del motor).
+     *
+     * @param ruta La ruta del archivo a leer.
+     * @return Un mapa que asocia la propiedad con su valor en texto.
+     */
     private Map<String, String> leerArchivo(String ruta) {
         Map<String, String> configuracion = new HashMap<>();
 
@@ -54,10 +79,22 @@ public class ConfiguradorVehiculo {
         return configuracion;
     }
 
+    /**
+     * Instancia un nuevo objeto {@link Motor} basado en el cilindraje leído.
+     *
+     * @param cilindraje Capacidad del motor.
+     * @return Instancia de Motor.
+     */
     private Motor crearMotor(int cilindraje) {
         return new Motor(cilindraje);
     }
 
+    /**
+     * Instancia un nuevo objeto {@link Llantas} basado en el tipo leído.
+     *
+     * @param tipo Categoría de las llantas.
+     * @return Instancia de Llantas.
+     */
     private Llantas crearLlanta(String tipo) {
         return new Llantas(tipo);
     }
