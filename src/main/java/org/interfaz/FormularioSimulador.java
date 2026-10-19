@@ -23,6 +23,8 @@ public class FormularioSimulador extends JFrame {
     private JButton btnFreno;
     private JButton btnBrusco;
     private JPanel mainJPanel;
+    private JPanel panelPonerCarro;
+    private JTextField textFieldMostrarEstado;
     private PanelCarro panelCarro;
     private Vehiculo miVehiculo;
 
@@ -33,7 +35,7 @@ public class FormularioSimulador extends JFrame {
      */
     public FormularioSimulador() {
         setTitle("Simulador de Vehículo - Excepciones");
-        setSize(850, 680);
+        setSize(850, 480);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setLocationRelativeTo(null);
@@ -51,6 +53,7 @@ public class FormularioSimulador extends JFrame {
         btnEncender.addActionListener(e -> {
             try {
                 miVehiculo.encender();
+                textFieldMostrarEstado.setText("ENCENDIDO");
             } catch (ExcepcionVehiculo ex) {
                 mostrarError(ex.getMessage());
             }

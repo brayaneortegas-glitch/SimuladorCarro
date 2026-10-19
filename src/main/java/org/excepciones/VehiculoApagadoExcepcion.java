@@ -7,9 +7,6 @@ package org.excepciones;
  * @version 1.0
  */
 public class VehiculoApagadoExcepcion extends ExcepcionVehiculo {
-    /**
-     * @param message El detalle del accidente.
-     */
     public VehiculoApagadoExcepcion(String message) {
         super(message);
     }
