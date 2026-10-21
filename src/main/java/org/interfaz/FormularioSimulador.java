@@ -25,6 +25,7 @@ public class FormularioSimulador extends JFrame {
     private JPanel mainJPanel;
     private JPanel panelPonerCarro;
     private JTextField textFieldMostrarEstado;
+    private JTextField textFieldMostrarkilometraje;
     private PanelCarro panelCarro;
     private Vehiculo miVehiculo;
 
@@ -43,16 +44,45 @@ public class FormularioSimulador extends JFrame {
         ConfiguradorVehiculo configurador = new ConfiguradorVehiculo();
         miVehiculo = configurador.cargarConfiguracion("src/main/java/org/lector_archivo/config.txt");
 
-        setLayout(new BorderLayout());
-        add(mainJPanel, BorderLayout.WEST);
+        setContentPane(mainJPanel);
+
+        JLayeredPane layeredPane = new JLayeredPane();
+        panelPonerCarro.setLayout(new BorderLayout());
+        panelPonerCarro.add(layeredPane, BorderLayout.CENTER);
 
         panelCarro = new PanelCarro(miVehiculo);
-        add(panelCarro, BorderLayout.CENTER);
 
+        JPanel panelBotonesFlotantes = new JPanel();
+        panelBotonesFlotantes.setOpaque(false);
+        panelBotonesFlotantes.add(btnEncender);
+        panelBotonesFlotantes.add(btnApagar);
+        panelBotonesFlotantes.add(btnAcelerar);
+        panelBotonesFlotantes.add(btnFreno);
+        panelBotonesFlotantes.add(btnBrusco);
+
+        layeredPane.add(panelCarro, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(panelBotonesFlotantes, JLayeredPane.PALETTE_LAYER);
+
+        panelPonerCarro.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                int ancho = panelPonerCarro.getWidth();
+                int alto = panelPonerCarro.getHeight();
+
+                panelCarro.setBounds(0, 0, ancho, alto);
+
+                // Los botones se posicionado en la franja superior sobre el cielo
+                panelBotonesFlotantes.setBounds(0, 30, ancho, 50);
+            }
+        });
+
+        setLocationRelativeTo(null);
+        textFieldMostrarEstado.setText("APAGADO");
 
         btnEncender.addActionListener(e -> {
             try {
                 miVehiculo.encender();
+                textFieldMostrarEstado.setText("");
                 textFieldMostrarEstado.setText("ENCENDIDO");
             } catch (ExcepcionVehiculo ex) {
                 mostrarError(ex.getMessage());
@@ -62,18 +92,27 @@ public class FormularioSimulador extends JFrame {
         btnApagar.addActionListener(e -> {
             try {
                 miVehiculo.apagar();
+                textFieldMostrarEstado.setText("");
+                textFieldMostrarEstado.setText("APAGADO");
             } catch (ExcepcionVehiculo ex) {
                 mostrarError(ex.getMessage());
+                textFieldMostrarEstado.setText("ACCIDENTADO");
+
             }
         });
 
         btnAcelerar.addActionListener(e -> {
             try {
-                String input = JOptionPane.showInputDialog(this, "¿Cuántos Km/h deseas acelerar?");
-                if (input != null && !input.isEmpty()) {
-                    double magnitud = Double.parseDouble(input);
-                    miVehiculo.acelerar(magnitud);
+                if (miVehiculo.isEncendido() == true) {
+                    String input = JOptionPane.showInputDialog(this, "¿Cuántos Km/h deseas acelerar?");
+                    if (input != null && !input.isEmpty()) {
+                        double magnitud = Double.parseDouble(input);
+                        miVehiculo.acelerar(magnitud);
+                        textFieldMostrarEstado.setText("ACELERADO");
+                        textFieldMostrarkilometraje.setText(input + " KM/H");
+                    }
                 }
+
             } catch (ExcepcionVehiculo ex) {
                 mostrarError(ex.getMessage());
             } catch (NumberFormatException ex) {
@@ -83,11 +122,17 @@ public class FormularioSimulador extends JFrame {
 
         btnFreno.addActionListener(e -> {
             try {
-                String input = JOptionPane.showInputDialog(this, "¿Cuántos Km/h deseas frenar?");
-                if (input != null && !input.isEmpty()) {
-                    double magnitud = Double.parseDouble(input);
-                    miVehiculo.frenar(magnitud);
+                if (miVehiculo.isEncendido() == true) {
+                    String input = JOptionPane.showInputDialog(this, "¿Cuántos Km/h deseas frenar?");
+                    if (input != null && !input.isEmpty()) {
+                        double magnitud = Double.parseDouble(input);
+                        miVehiculo.frenar(magnitud);
+                        textFieldMostrarEstado.setText("FRENANDO");
+                        textFieldMostrarkilometraje.setText("FRENANDO");
+
+                    }
                 }
+
             } catch (ExcepcionVehiculo ex) {
                 mostrarError(ex.getMessage());
             } catch (NumberFormatException ex) {
@@ -97,13 +142,19 @@ public class FormularioSimulador extends JFrame {
 
         btnBrusco.addActionListener(e -> {
             try {
-                String input = JOptionPane.showInputDialog(this, "¿Cuántos Km/h deseas frenar bruscamente?");
-                if (input != null && !input.isEmpty()) {
-                    double magnitud = Double.parseDouble(input);
-                    miVehiculo.frenarBruscamente(magnitud);
+                if (miVehiculo.isEncendido() == true) {
+                    String input = JOptionPane.showInputDialog(this, "¿Cuántos Km/h deseas frenar bruscamente?");
+                    if (input != null && !input.isEmpty()) {
+                        double magnitud = Double.parseDouble(input);
+                        miVehiculo.frenarBruscamente(magnitud);
+                        textFieldMostrarEstado.setText("FRENANDO BRUSCO");
+                        textFieldMostrarkilometraje.setText("FRENO BRUSCO");
+                    }
                 }
+
             } catch (ExcepcionVehiculo ex) {
                 mostrarError(ex.getMessage());
+                textFieldMostrarEstado.setText("PATINANDO");
             } catch (NumberFormatException ex) {
                 mostrarError("Por favor ingresa un número válido.");
             }
@@ -126,9 +177,7 @@ public class FormularioSimulador extends JFrame {
      * @param args Argumentos de la línea de comandos.
      */
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
             FormularioSimulador ventana = new FormularioSimulador();
             ventana.setVisible(true);
-        });
     }
 }

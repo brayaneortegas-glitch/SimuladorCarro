@@ -108,12 +108,5 @@ public class PanelCarro extends JPanel {
         g.setColor(Color.LIGHT_GRAY);
         g.fillOval(posX + 45, 335, 20, 20);
         g.fillOval(posX + 175, 335, 20, 20);
-
-        // Panel Informativo Superior en pantalla
-        g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.BOLD, 13));
-        String estado = vehiculo.isAccidentado() ? "Accidentado" : (vehiculo.isPatinando() ? "Patinando" : (vehiculo.isEncendido() ? "Encendido" : "Apagado"));
-        g.drawString("Estado: " + estado, 20, 25);
-        g.drawString("Velocidad actual: " + vehiculo.getVelocidad() + " km/h", 20, 45);
     }
 }
